@@ -24,6 +24,7 @@ data = [
 class DynamicColumnsTest(TestCase):
 
     # shim can be dropped when we drop support for python 2.7 and 3.4
+    print(dir(TestCase))
     assertRegex = getattr(TestCase, 'assertRegex', TestCase.assertRegexpMatches)
     assertNotRegex = getattr(TestCase, 'assertNotRegex', TestCase.assertNotRegexpMatches)
 
@@ -102,16 +103,16 @@ class DynamicColumnsTest(TestCase):
             class Meta:
                 sequence = ('...', 'name')
 
-        assert list(MyTable(data, extra_columns=[
+        self.assertEqual(list(MyTable(data, extra_columns=[
             ('country', tables.Column())
-        ]).columns.columns.keys()) == ['country', 'name']
+        ]).columns.columns.keys()), ['country', 'name'])
 
         # override sequence with an argument.
-        assert list(MyTable(
+        self.assertEqual(list(MyTable(
             data,
             extra_columns=[('country', tables.Column())],
             sequence=('name', '...')
-        ).columns.columns.keys()) == ['name', 'country']
+        ).columns.columns.keys()), ['name', 'country'])
 
     def test_dynamically_hide_columns(self):
         class MyTable(tables.Table):
